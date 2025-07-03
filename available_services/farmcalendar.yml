@@ -17,7 +17,7 @@ services:
       - farmcalendar_db_data:/var/lib/postgresql/data
 
   farmcalendar:
-    image: ghcr.io/openagri-eu/farmcalendar:latest
+    image: ghcr.io/openagri-eu/openagri-farmcalendar:latest
     command: /var/www/entrypoint.sh
     environment:
       APP_HOST: ${FARM_CALENDAR_APP_HOST}
