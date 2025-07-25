@@ -1,0 +1,14 @@
+services:
+  userdashboard:
+    image: ghcr.io/openagri-eu/openagri-userdashboard:latest
+    environment:
+      SERVICE_PORT: ${USER_DASHBOARD_SERVICE_PORT}
+    healthcheck:
+      test: ["CMD", "service", "nginx", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      gatekeeper:
+        condition: service_healthy
