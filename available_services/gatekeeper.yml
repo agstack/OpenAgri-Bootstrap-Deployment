@@ -15,7 +15,7 @@ services:
       - gatekeeper_db_data:/var/lib/mysql
 
   gatekeeper:
-    image: ghcr.io/openagri-eu/gatekeeper:latest
+    image: ghcr.io/openagri-eu/openagri-gatekeeper:latest
     environment:
       - DATABASE_URL=mysql://${GATEKEEPER_DB_USER}:${GATEKEEPER_DB_PASS}@gatekeeper_db:3306/${GATEKEEPER_DB_NAME}
       - MAINTENANCE_MODE=${MAINTENANCE_MODE}
@@ -27,6 +27,8 @@ services:
       - SUPERUSER_EMAIL=${GATEKEEPER_SUPERUSER_EMAIL}
       - SUPERUSER_PASSWORD=${GATEKEEPER_SUPERUSER_PASSWORD}
       - JWT_SIGNING_KEY=${JWT_SIGNING_KEY}
+      - JWT_ACCESS_TOKEN_MINUTES=${JWT_ACCESS_TOKEN_MINUTES}
+      - JWT_REFRESH_TOKEN_DAYS=${JWT_REFRESH_TOKEN_DAYS}
       - FARM_CALENDAR_API=${GATEKEEPER_FARM_CALENDAR_API}
       - FARM_CALENDAR_POST_AUTH=${GATEKEEPER_FARM_CALENDAR_POST_AUTH}
       - EXTRA_ALLOWED_HOSTS=${EXTRA_ALLOWED_HOSTS}
