@@ -25,6 +25,7 @@ SERVICE_NAMES_TO_PORT_ENV_VARS = {
     "weathersrv": 'WEATHER_SRV_PORT',
     "irrigation": 'IRR_SERVICE_PORT',
     "reporting": 'REPORTING_SERVICE_PORT',
+    "userdashboard": 'USER_DASHBOARD_SERVICE_PORT',
 }
 
 
