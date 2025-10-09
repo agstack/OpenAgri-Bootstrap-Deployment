@@ -93,8 +93,11 @@ def main():
     # Print the constructed command (for debugging purposes)
     print("Running command:", " ".join(compose_command))
 
-    # Run the docker compose command
-    subprocess.run(compose_command)
+    try:
+        # Run the docker compose command
+        subprocess.run(compose_command)
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == "__main__":
     main()
