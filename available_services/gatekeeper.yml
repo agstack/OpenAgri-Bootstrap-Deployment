@@ -6,11 +6,23 @@ services:
       MYSQL_USER: ${GATEKEEPER_DB_USER}
       MYSQL_PASSWORD: ${GATEKEEPER_DB_PASS}
       MYSQL_ROOT_PASSWORD: ${GATEKEEPER_DB_PASS}
+    command:
+      - --innodb_buffer_pool_size=128M
+      - --innodb_log_file_size=64M
+      - --max_connections=25
+      - --table_open_cache=200
+      - --tmp_table_size=16M
+      - --max_heap_table_size=16M
+      - --performance_schema=OFF
+      - --skip-name-resolve
+      - --default-authentication-plugin=mysql_native_password
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 3
+#    mem_limit: 256m
+    restart: always
     volumes:
       - gatekeeper_db_data:/var/lib/mysql
 
@@ -45,6 +57,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+#    mem_limit: 512m
+    restart: always
     volumes:
       - gatekeeper_static:/static
       - gatekeeper_media:/media
