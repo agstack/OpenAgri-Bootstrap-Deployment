@@ -1,0 +1,41 @@
+services:
+  pdm_db:
+    platform: linux/arm64
+    ports:
+      - "5432:5432"
+    image: postgres:16.3
+    environment:
+      POSTGRES_DB: ${PDM_POSTGRES_DB}
+      POSTGRES_USER: ${PDM_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${PDM_POSTGRES_PASSWORD}
+      PGPORT: ${PDM_POSTGRES_PORT}
+    healthcheck:
+      test: pg_isready -U ${PDM_POSTGRES_USER} -d ${PDM_POSTGRES_DB}
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  pdm:
+    platform: linux/arm64
+    depends_on:
+      pdm_db:
+        condition: service_healthy
+    ports:
+      - ${PDM_SERVICE_PORT}:${PDM_SERVICE_PORT}
+    image: ghcr.io/openagri-eu/openagri-pestanddiseasemanagement:latest
+    command: /code/entrypoint.sh ${PDM_SERVICE_PORT}
+    environment:
+      POSTGRES_HOST: pdm_db
+      POSTGRES_USER: ${PDM_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${PDM_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${PDM_POSTGRES_DB}
+      POSTGRES_PORT: ${PDM_POSTGRES_PORT}
+      ACCESS_TOKEN_EXPIRATION_TIME: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+      JWT_KEY: ${JWT_SIGNING_KEY}
+      SERVICE_PORT: ${PDM_SERVICE_PORT}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      JWT_ALGORITHM: ${JWT_ALG}
+      USING_GATEKEEPER: "False"
+      LOGGING: ${LOGGING_LEVEL}
+      REFRESH_TOKEN_EXPIRATION_TIME: ${REFRESH_TOKEN_EXPIRATION_TIME}
