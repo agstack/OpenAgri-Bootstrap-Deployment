@@ -1,0 +1,43 @@
+services:
+  weathersrv_db:
+    platform: linux/arm64
+    image: mongo:4
+    command: mongod
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${WEATHER_SRV_MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${WEATHER_SRV_MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${WEATHER_SRV_MONGO_INITDB_DATABASE}
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  weathersrv:
+    platform: linux/arm64
+    image: ghcr.io/openagri-eu/openagri-weatherservice:latest
+    ports:
+      - ${WEATHER_SRV_PORT}:${WEATHER_SRV_PORT}
+    depends_on:
+      weathersrv_db:
+        condition: service_healthy
+    environment:
+      LOGGING_LEVEL: ${LOGGING_LEVEL:-INFO}
+      JWT_KEY: ${JWT_SIGNING_KEY}
+      ALGORITHM: ${JWT_ALG:-HS256}
+      CRYPT_CONTEXT_SCHEME: ${JWT_CRYPT_CONTEXT_SCHEME:-bcrypt}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME:-240}
+      WEATHER_SRV_PORT: ${WEATHER_SRV_PORT:-8000}
+      WEATHER_SRV_HOSTNAME: ${WEATHER_SRV_HOSTNAME:-weathersrv}
+      WEATHER_SRV_DATABASE_URI: ${WEATHER_SRV_DATABASE_URI}
+      WEATHER_SRV_DATABASE_NAME: ${WEATHER_SRV_DATABASE_NAME}
+      EXTRA_ALLOWED_HOSTS: ${WEATHER_SRV_EXTRA_ALLOWED_HOSTS:-*}
+      WEATHER_SRV_OPENWEATHERMAP_API_KEY: ${WEATHER_SRV_OPENWEATHERMAP_API_KEY}
+    volumes:
+      - ./data:/data:rw
+
+volumes:
+  mongodb_data:

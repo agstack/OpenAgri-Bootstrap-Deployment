@@ -8,6 +8,24 @@ This repository serves to bootstrap the deployment process of OpenAgri services 
 # Dependencies
 This project depends on docker (version > 20.10.0) and Python (2 or 3).
 
+# Raspberry Pi (ARM64) Deployment
+
+Deploying on a Raspberry Pi is supported, but requires the following prerequisites:
+
+**64-bit OS is mandatory.** Several services (MongoDB in particular) have no 32-bit ARM builds. Running 32-bit Raspberry Pi OS (armhf) will cause containers to exit immediately with code 159, even if the kernel reports `aarch64`.
+
+ARM64-specific service files are provided in `available_services_arm64/`. These differ from the standard files in two ways: all services have `platform: linux/arm64` set explicitly (working around Docker's platform auto-detection on some Pi configurations), and PDM runs without Gatekeeper (`USING_GATEKEEPER=False`). Currently available:
+
+- `pestmanagement.yml`
+- `weatherservice.yml`
+
+To deploy these on a Raspberry Pi, copy from `available_services_arm64/` instead of `available_services/`:
+```
+$ cp available_services_arm64/pestmanagement.yml services_in_use/
+$ cp available_services_arm64/weatherservice.yml services_in_use/
+```
+Then follow the standard setup and running instructions below.
+
 # Setup
 1. Copy any service YAML (.yml) file from the `available_services` directory into the `services_in_use` directory.
 2. Copy the `example.env` to a new file called `.env`. In this new file change the configurations of the selected services to meet your deployment scenario. We strongly suggest changing configurations for the default usernames and passwords of the services used.
