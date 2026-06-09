@@ -34,6 +34,9 @@ Then follow the standard setup and running instructions below.
 ## Fine Tuning Setup
 Any fine tuning on the deployment setup for the services can be done by overriding the individual services configurations on the `docker-compose.override.yml` and/or changing the environment variable in the `.env` configuration files.
 
+### Enable Agstack's Asset Registry
+By default the OpenAgri FarmCalendar service will use its own internal unique geo ID, but if you would like to use the Agstack's global Asset Registry to manage the unique geo IDs of your farm parcels instead, then you'll can uncomment the Agstack related variables from your `.env` file, and make sure to set to use your own tokens. The Agstack variables are: `AGSTACK_ASSET_REGISTY_API_URL`, `AGSTACK_USER_REGISTY_API_URL`, `AGSTACK_ACCESS_TOKEN`, `AGSTACK_REFRESH_TOKEN` .
+
 # Running
 To run all, execute the following command:
 ```
